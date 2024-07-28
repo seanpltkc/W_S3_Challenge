@@ -58,8 +58,45 @@
       // 🧠 Implement a `getAllReversed` method which returns the ints in reverse order
       // ❗ WARNING: except for `getAllReversed`, methods must respect the order of the integers
       // ❗ WARNING: note that except for push and pop, the methods don't change the `ints` property
+     
+  constructor(...args) {
+    this.ints = args;
+  }
 
-    }
+  getAll() {
+    return this.ints;
+  }
+
+  getEvens() {
+    return this.ints.filter(int => int % 2 === 0);
+  }
+
+  getNegatives() {
+    return this.ints.filter(int => int < 0);
+  }
+
+  getAllSquared() {
+    return this.ints.map(int => int * int);
+  }
+
+  pop() {
+    return this.ints.pop();
+  }
+
+  push(int) {
+    this.ints.push(int);
+    return this.ints;
+  }
+
+  getEveryNth(n) {
+    return this.ints.filter((_, index) => index % n === 0);
+  }
+
+  getAllReversed() {
+    return [...this.ints].reverse();
+  }
+}
+    
 
     // 👉 CHALLENGE 2 NerfGun
     class NerfGun {
@@ -76,8 +113,34 @@
       //      * When engaging the safety, return "Safety enabled!"
       //      * When disengaging the safety, return "Safety disabled!"
       // 🌟 HINT: instances need to keep track of their maximum capacity as well as their current capacity
-
-    }
+      constructor(maxProjectiles){
+          this.maxProjectiles = maxProjectiles
+          this.remainingProjectiles = maxProjectiles
+          this.safety = true
+        }
+        shoot() {
+          if (this.safety || this.remainingProjectiles === 0){
+            return "Click!"
+          } else {
+            this.remainingProjectiles--
+            return "Bang!"
+          }
+        }
+        reload(num) {
+          if (typeof num !== "number" || !(num > 0)) {
+            return "Error reloading!"
+          } else if (num > (this.maxProjectiles - this.remainingProjectiles)) {
+            this.remainingProjectiles = this.maxProjectiles
+          } else {
+            this.remainingProjectiles += num
+          } 
+          return `${this.remainingProjectiles} projectiles left!`
+        }
+        toggleSafety() {
+          this.safety = !this.safety
+          return this.safety ? "Safety enabled!" : "Safety disabled!"
+        }
+      }
 
     // 👉 CHALLENGE 3 EBook
     class EBook {
@@ -95,7 +158,21 @@
       //    ebook.next() // returns null
       // 🌟 HINT: remember about the `slice` method which strings and arrays have
       // ❗ Feel free to implement `back`, although this is not required nor graded
-
+      constructor(text, charsPerPage){
+        this.fullText = text
+        this.numOfChars = charsPerPage
+        this.charIndex = 0
+      }
+      next() {
+        const startingIndex = this.charIndex
+        const endingIndex = startingIndex + this.numOfChars
+        if (startingIndex >= this.fullText.length) {
+          return null;
+        }
+        const pageText = this.fullText.slice(startingIndex, endingIndex)
+        this.charIndex += this.numOfChars
+        return pageText
+      }
     }
 
     // 👉 CHALLENGE 4 AntFarm
@@ -130,7 +207,34 @@
       //      console.log(list) // prints ["a"]
       // 👉 HINT: if you are not feeling confident with map and filter, solve the problem with for loops,
       //      and with the piece of mind of all tests passing, refactor to use map/filter
+      constructor(...ants) {
+    this.ants = ants.map(name => ({ name, health: 100 }));
+  }
 
+  work() {
+    const numberOfAnts = this.ants.length;
+    if (numberOfAnts === 0) {
+      return "No ants here. Did you work them to death?";
+    }
+
+    this.ants = this.ants.map(ant => ({ ...ant, health: ant.health - 20 }))
+                         .filter(ant => ant.health > 0);
+
+    return `${numberOfAnts} ants starting work!`;
+  }
+
+  feed(name) {
+    let found = false;
+    this.ants = this.ants.map(ant => {
+      if (ant.name === name) {
+        found = true;
+        return { ...ant, health: ant.health + 15 };
+      }
+      return ant;
+    });
+
+    return found ? "Yum!" : `${name} not found!`;
+  }
     }
 
     // 🧪 TESTS, do not make any changes below this line ===================
